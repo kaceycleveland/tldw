@@ -5,7 +5,8 @@
   "description": "A Chrome extension built with Vite and Tailwind CSS",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -17,7 +18,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "css": ["popup.css"]
     }
   ]
 }

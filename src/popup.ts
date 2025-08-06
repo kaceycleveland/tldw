@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const enabledState = document.getElementById('enabled-state')
   const disabledState = document.getElementById('disabled-state')
   const extractBtn = document.getElementById('extract-btn')
+  const viewResultsBtn = document.getElementById('view-results-btn')
   const apiKeyInput = document.getElementById('api-key') as HTMLInputElement
   const saveKeyBtn = document.getElementById('save-key-btn')
   
@@ -66,6 +67,22 @@ document.addEventListener('DOMContentLoaded', () => {
             })
           }
         })
+      })
+    })
+  }
+  
+  // Handle view results button click
+  if (viewResultsBtn) {
+    viewResultsBtn.addEventListener('click', () => {
+      console.log('View results button clicked!')
+      
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+          chrome.tabs.sendMessage(tabs[0].id, { 
+            action: 'showLastResults',
+            message: 'Show last exercise results'
+          })
+        }
       })
     })
   }
