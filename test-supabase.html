@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover { background: #2563eb; }
+        .result { margin: 20px 0; padding: 15px; border-radius: 4px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>TLDW Supabase Local Development Test</h1>
+    
+    <div id="config-status"></div>
+    
+    <h2>Tests</h2>
+    <button onclick="testConnection()">Test Connection</button>
+    <button onclick="testAuth()">Test Authentication</button>
+    <button onclick="testTables()">Test Database Tables</button>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        import { supabase, isSupabaseConfigured } from './dist/supabase.js';
+        import { auth, profiles, extractions, tags } from './dist/supabase-utils.js';
+
+        // Check configuration status
+        const configDiv = document.getElementById('config-status');
+        if (isSupabaseConfigured()) {
+            configDiv.innerHTML = '<div class="success">✅ Supabase is configured</div>';
+            configDiv.innerHTML += `<div class="info">URL: ${import.meta.env.VITE_SUPABASE_URL || 'http://127.0.0.1:54321'}</div>`;
+        } else {
+            configDiv.innerHTML = '<div class="error">❌ Supabase configuration missing</div>';
+        }
+
+        window.testConnection = async () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="info">Testing connection...</div>';
+            
+            try {
+                const { data, error } = await supabase.from('profiles').select('count').limit(1);
+                if (error) throw error;
+                
+                resultsDiv.innerHTML = '<div class="success">✅ Database connection successful!</div>';
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Connection failed: ${error.message}</div>`;
+            }
+        };
+
+        window.testAuth = async () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="info">Testing authentication...</div>';
+            
+            try {
+                const user = await auth.getCurrentUser();
+                const session = await auth.getCurrentSession();
+                
+                resultsDiv.innerHTML = `
+                    <div class="result">
+                        <h3>Authentication Status</h3>
+                        <p><strong>User:</strong> ${user ? user.email || 'Anonymous' : 'Not authenticated'}</p>
+                        <p><strong>Session:</strong> ${session ? 'Active' : 'None'}</p>
+                        <pre>${JSON.stringify({user: user?.id, session: !!session}, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Auth test failed: ${error.message}</div>`;
+            }
+        };
+
+        window.testTables = async () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="info">Testing database tables...</div>';
+            
+            try {
+                // Test each table
+                const tests = [
+                    { name: 'profiles', query: () => supabase.from('profiles').select('count').limit(1) },
+                    { name: 'extractions', query: () => supabase.from('extractions').select('count').limit(1) },
+                    { name: 'tags', query: () => supabase.from('tags').select('count').limit(1) },
+                    { name: 'extraction_tags', query: () => supabase.from('extraction_tags').select('count').limit(1) }
+                ];
+
+                const results = [];
+                for (const test of tests) {
+                    try {
+                        const { error } = await test.query();
+                        if (error) throw error;
+                        results.push(`✅ ${test.name}: OK`);
+                    } catch (error) {
+                        results.push(`❌ ${test.name}: ${error.message}`);
+                    }
+                }
+
+                resultsDiv.innerHTML = `
+                    <div class="result">
+                        <h3>Database Tables Test</h3>
+                        ${results.map(result => `<div>${result}</div>`).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Tables test failed: ${error.message}</div>`;
+            }
+        };
+
+        // Auto-run connection test on load
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 500);
+        });
+    </script>
+</body>
+</html>

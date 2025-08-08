@@ -11,7 +11,8 @@
     "sidePanel"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://*.supabase.co/*"
   ],
   "side_panel": {
     "default_path": "sidepanel.html"
