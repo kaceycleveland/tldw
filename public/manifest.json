@@ -12,7 +12,9 @@
   ],
   "host_permissions": [
     "*://*.youtube.com/*",
-    "*://*.supabase.co/*"
+    "*://*.supabase.co/*",
+    "http://127.0.0.1:54321/*",
+    "http://localhost:54321/*"
   ],
   "side_panel": {
     "default_path": "sidepanel.html"

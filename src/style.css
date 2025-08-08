@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for Supabase Auth UI */
+.auth-container {
+  @apply w-full max-w-md mx-auto;
+}
+
+.auth-button {
+  @apply w-full px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+}
+
+.auth-input {
+  @apply w-full px-3 py-2 text-sm border rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500;
+}
+
+.auth-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}

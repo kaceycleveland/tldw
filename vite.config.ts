@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { existsSync, renameSync, rmSync } from 'fs'
 
@@ -21,6 +22,7 @@ export default defineConfig({
   },
   publicDir: 'public',
   plugins: [
+    react(),
     {
       name: 'move-sidepanel-html',
       writeBundle() {
