@@ -5,11 +5,18 @@
   "description": "A Chrome extension built with Vite and Tailwind CSS",
   "permissions": [
     "activeTab",
+    "tabs",
     "storage",
-    "scripting"
+    "scripting",
+    "sidePanel"
   ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
   "action": {
-    "default_popup": "popup.html",
     "default_title": "TLDW Extension"
   },
   "background": {
@@ -17,9 +24,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["*://*.youtube.com/*"],
       "js": ["content.js"],
-      "css": ["popup.css"]
+      "css": ["sidepanel.css"],
+      "run_at": "document_idle"
     }
   ]
 }

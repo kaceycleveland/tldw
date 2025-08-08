@@ -72,6 +72,8 @@ function hideLoadingIndicator() {
 // Function to navigate to timestamp in YouTube video
 function navigateToTimestamp(timestamp: string) {
   try {
+    console.log('Attempting to navigate to timestamp:', timestamp)
+    
     // Parse timestamp (e.g., "2:30" or "1:23:45")
     const parts = timestamp.split(':').reverse()
     let seconds = 0
@@ -81,15 +83,53 @@ function navigateToTimestamp(timestamp: string) {
       seconds += parseInt(parts[i]) * Math.pow(60, i)
     }
     
-    // Get YouTube video player
-    const video = document.querySelector('video') as HTMLVideoElement
-    if (video) {
-      video.currentTime = seconds
-      video.play()
-      showNotification(`Jumped to ${timestamp}`, 'success')
-    } else {
-      showNotification('Could not find video player', 'error')
+    console.log('Calculated seconds:', seconds)
+    
+    // Function to find and navigate to video
+    const navigateToVideo = () => {
+      // Try multiple selectors for YouTube video
+      const videoSelectors = [
+        'video',
+        '.html5-video-player video',
+        '.video-stream',
+        '#movie_player video'
+      ]
+      
+      let video: HTMLVideoElement | null = null
+      
+      for (const selector of videoSelectors) {
+        video = document.querySelector(selector) as HTMLVideoElement
+        if (video) {
+          console.log('Found video element with selector:', selector)
+          break
+        }
+      }
+      
+      console.log('Found video element:', !!video)
+      
+      if (video) {
+        console.log('Setting video currentTime to:', seconds)
+        video.currentTime = seconds
+        video.play()
+        showNotification(`Jumped to ${timestamp}`, 'success')
+        return true
+      }
+      
+      return false
     }
+    
+    // Try to navigate immediately
+    if (!navigateToVideo()) {
+      // If video not found, wait a bit and try again
+      console.log('Video not found immediately, waiting and retrying...')
+      setTimeout(() => {
+        if (!navigateToVideo()) {
+          console.error('No video element found after retry')
+          showNotification('Could not find video player', 'error')
+        }
+      }, 1000)
+    }
+    
   } catch (error) {
     console.error('Error navigating to timestamp:', error)
     showNotification('Invalid timestamp format', 'error')
@@ -174,10 +214,9 @@ Video Description: ${videoInfo.description}`
       lastVideoTitle: videoInfo.title
     })
     
-    // Hide loading indicator and display results
+    // Hide loading indicator and show success notification
     hideLoadingIndicator()
-    displayExerciseResults(exercises)
-    showNotification('Exercise analysis complete!', 'success')
+    showNotification('Exercise analysis complete! Open side panel to view results.', 'success')
     
     return exercises
   } catch (error) {
@@ -188,104 +227,6 @@ Video Description: ${videoInfo.description}`
   }
 }
 
-// Function to display exercise results
-function displayExerciseResults(exercises: any[]) {
-  // Remove any existing results
-  const existingResults = document.getElementById('tldw-exercise-results')
-  if (existingResults) {
-    existingResults.remove()
-  }
-  
-  const resultsContainer = document.createElement('div')
-  resultsContainer.id = 'tldw-exercise-results'
-  resultsContainer.className = 'fixed bottom-5 right-5 bg-white border-2 border-blue-500 rounded-xl p-5 w-[450px] max-h-[60vh] overflow-y-auto z-[10001] font-sans shadow-2xl flex flex-col'
-
-  let isExpanded = false
-  
-  // Create header
-  const header = document.createElement('div')
-  header.className = 'flex justify-between items-center pb-3'
-
-  header.innerHTML = `
-    <h3 class="m-0 text-gray-800 text-lg font-bold">Exercise Analysis Results (${exercises.length} found)</h3>
-    <div class="flex items-center">
-      <button id="tldw-toggle-results" class="bg-gray-200 text-gray-800 border-none rounded-md px-3 py-1.5 cursor-pointer text-sm hover:bg-gray-300 mr-2">Expand</button>
-      <button id="tldw-close-results" class="bg-red-500 text-white border-none rounded-md px-3 py-1.5 cursor-pointer text-sm hover:bg-red-600">Close</button>
-    </div>
-  `
-  
-  // Create exercises container
-  const exercisesContainer = document.createElement('div')
-  exercisesContainer.className = 'overflow-y-auto'
-  exercisesContainer.style.display = 'none' // Initially hidden
-
-  if (exercises.length === 0) {
-    exercisesContainer.innerHTML = '<p class="text-center text-gray-500 italic">No exercises found in this video.</p>'
-  } else {
-    exercisesContainer.innerHTML = exercises.map((exercise) => {
-      const isClickableTimestamp = exercise.timestamp !== 'N/A' && exercise.timestamp.match(/^\d+:\d+$|^\d+:\d+:\d+$/)
-      const timestampElement = isClickableTimestamp 
-        ? `<button class="timestamp-btn bg-blue-500 text-white px-2 py-0.5 rounded-xl text-xs font-medium border-none cursor-pointer transition-colors hover:bg-blue-600" data-timestamp="${exercise.timestamp}">${exercise.timestamp}</button>`
-        : `<span class="bg-gray-500 text-white px-2 py-0.5 rounded-xl text-xs font-medium">${exercise.timestamp}</span>`
-      
-      return `
-        <div class="mb-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
-          <div class="flex justify-between items-start mb-1.5">
-            <h4 class="m-0 text-gray-800 text-base font-semibold">${exercise.exerciseName}</h4>
-            ${timestampElement}
-          </div>
-          <p class="m-0 text-gray-700 leading-relaxed text-sm">${exercise.howToPerform}</p>
-        </div>
-      `
-    }).join('')
-  }
-  
-  resultsContainer.appendChild(header)
-  resultsContainer.appendChild(exercisesContainer)
-  document.body.appendChild(resultsContainer)
-  
-  // --- Functionality ---
-
-  // Toggle expand/collapse
-  const toggleBtn = document.getElementById('tldw-toggle-results')
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      isExpanded = !isExpanded
-      exercisesContainer.style.display = isExpanded ? 'block' : 'none'
-      toggleBtn.textContent = isExpanded ? 'Collapse' : 'Expand'
-      resultsContainer.classList.toggle('is-expanded', isExpanded)
-
-      // Adjust styles for expanded view
-      if (isExpanded) {
-        resultsContainer.style.borderTopWidth = '1px'
-        header.style.borderBottom = '1px solid #e5e7eb' // border-gray-200
-        header.style.marginBottom = '0.75rem' // mb-3
-      } else {
-        header.style.borderBottom = 'none'
-        header.style.marginBottom = '0'
-      }
-    })
-  }
-
-  // Add close functionality
-  const closeBtn = document.getElementById('tldw-close-results')
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      resultsContainer.remove()
-    })
-  }
-  
-  // Add timestamp click handlers
-  const timestampBtns = resultsContainer.querySelectorAll('.timestamp-btn')
-  timestampBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const timestamp = (e.target as HTMLElement).getAttribute('data-timestamp')
-      if (timestamp) {
-        navigateToTimestamp(timestamp)
-      }
-    })
-  })
-}
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   console.log('Content script received message:', message)
@@ -313,17 +254,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
   
   if (message.action === 'showLastResults') {
-    chrome.storage.local.get(['lastExerciseResults', 'lastVideoUrl', 'lastVideoTitle'], (result) => {
-      console.log(result);
-      if (result.lastExerciseResults && result.lastVideoUrl === window.location.href) {
-        displayExerciseResults(result.lastExerciseResults)
-        sendResponse({ success: true })
-      } else {
-        showNotification('No exercise results found for this video', 'info')
-        sendResponse({ success: false, message: 'No results found' })
-      }
-    })
-    return true
+    showNotification('Please check the side panel for exercise results', 'info')
+    sendResponse({ success: true })
+    return false
+  }
+  
+  if (message.action === 'navigateToTimestamp') {
+    console.log('Content script received navigateToTimestamp message:', message)
+    navigateToTimestamp(message.timestamp)
+    sendResponse({ success: true })
+    return false
   }
   
   // For unknown actions, don't keep the channel open
