@@ -1,0 +1,30 @@
+{
+  "name": "chrome-extension",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/chrome-extension/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/chrome-extension && tsc && vite build",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/chrome-extension && vite build --watch",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/chrome-extension && vite preview",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:web"]
+}

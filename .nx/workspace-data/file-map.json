@@ -1,0 +1,194 @@
+{
+  "version": "6.0",
+  "nxVersion": "21.3.11",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "14003329793404299363"
+      },
+      {
+        "file": "supabase/functions/similarity-search/index.ts",
+        "hash": "3424755910314418770"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "12420833537645874124"
+      },
+      {
+        "file": "supabase/migrations/20250809000000_add_embeddings_support.sql",
+        "hash": "3819601567155131380"
+      },
+      {
+        "file": "database_embeddings.md",
+        "hash": "4535114027821872251"
+      },
+      {
+        "file": "supabase/config.toml",
+        "hash": "13877064553765677598"
+      },
+      {
+        "file": "EMBEDDINGS_SETUP.md",
+        "hash": "9464907982501753291"
+      },
+      {
+        "file": ".claude/agents/supabase-gemini-backend.md",
+        "hash": "12935708275063997993"
+      },
+      {
+        "file": "README.md",
+        "hash": "5155019679926678701"
+      },
+      {
+        "file": ".env.example",
+        "hash": "7740251043183177567"
+      },
+      {
+        "file": "supabase/seed.sql",
+        "hash": "8616927802459634123"
+      },
+      {
+        "file": "package.json",
+        "hash": "4155422910918464928"
+      },
+      {
+        "file": "supabase/migrations/20250808030035_init_tldw_schema.sql",
+        "hash": "16195821465086893058"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "2027505224822103088"
+      },
+      {
+        "file": "supabase/functions/_shared/cors.ts",
+        "hash": "10228727908390528383"
+      },
+      {
+        "file": "CLAUDE.md",
+        "hash": "8306155533552977067"
+      },
+      {
+        "file": "pnpm-workspace.yaml",
+        "hash": "4682124154651265967"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "6825980598186111639"
+      },
+      {
+        "file": "nx.json",
+        "hash": "15356611403135496943"
+      },
+      {
+        "file": "supabase/functions/generate-embeddings/index.ts",
+        "hash": "9340873096301318494"
+      },
+      {
+        "file": "supabase/.gitignore",
+        "hash": "10990855904653518110"
+      }
+    ],
+    "projectFileMap": {
+      "chrome-extension": [
+        {
+          "file": "apps/chrome-extension/package.json",
+          "hash": "1333245412979097786"
+        },
+        {
+          "file": "apps/chrome-extension/postcss.config.js",
+          "hash": "1121830044826443979"
+        },
+        {
+          "file": "apps/chrome-extension/project.json",
+          "hash": "5000655211128004029"
+        },
+        {
+          "file": "apps/chrome-extension/public/manifest.json",
+          "hash": "17349552633719704083"
+        },
+        {
+          "file": "apps/chrome-extension/src/background.ts",
+          "hash": "15506275009099500263"
+        },
+        {
+          "file": "apps/chrome-extension/src/components/Auth.tsx",
+          "hash": "11490580398680942376"
+        },
+        {
+          "file": "apps/chrome-extension/src/components/ProtectedRoute.tsx",
+          "hash": "7374267772570059468"
+        },
+        {
+          "file": "apps/chrome-extension/src/components/Sidepanel.tsx",
+          "hash": "12211240126562951979"
+        },
+        {
+          "file": "apps/chrome-extension/src/content.ts",
+          "hash": "5756231924484611483"
+        },
+        {
+          "file": "apps/chrome-extension/src/contexts/AuthContext.tsx",
+          "hash": "16093350429298778455"
+        },
+        {
+          "file": "apps/chrome-extension/src/lib/database.types.ts",
+          "hash": "14646664575839047939"
+        },
+        {
+          "file": "apps/chrome-extension/src/lib/embeddings.ts",
+          "hash": "4985922580737926394"
+        },
+        {
+          "file": "apps/chrome-extension/src/lib/supabase-utils.ts",
+          "hash": "73509075756029444"
+        },
+        {
+          "file": "apps/chrome-extension/src/lib/supabase.ts",
+          "hash": "5216344368610592915"
+        },
+        {
+          "file": "apps/chrome-extension/src/popup.html",
+          "hash": "7693274452215204852"
+        },
+        {
+          "file": "apps/chrome-extension/src/popup.ts",
+          "hash": "16044714467808252295"
+        },
+        {
+          "file": "apps/chrome-extension/src/sidepanel.html",
+          "hash": "11927967878273524916"
+        },
+        {
+          "file": "apps/chrome-extension/src/sidepanel.tsx",
+          "hash": "9784052460267392407"
+        },
+        {
+          "file": "apps/chrome-extension/src/style.css",
+          "hash": "325492932048793686"
+        },
+        {
+          "file": "apps/chrome-extension/src/vite-env.d.ts",
+          "hash": "3091185263219845341"
+        },
+        {
+          "file": "apps/chrome-extension/tailwind.config.js",
+          "hash": "8743070149044345912"
+        },
+        {
+          "file": "apps/chrome-extension/test-supabase.html",
+          "hash": "18139766141802051609"
+        },
+        {
+          "file": "apps/chrome-extension/tsconfig.json",
+          "hash": "8911800886027924182"
+        },
+        {
+          "file": "apps/chrome-extension/vite.config.ts",
+          "hash": "7821841154341716225"
+        }
+      ]
+    }
+  }
+}

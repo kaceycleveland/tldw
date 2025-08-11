@@ -34,6 +34,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      embeddings: {
+        Row: {
+          id: string
+          extraction_id: string | null
+          user_id: string | null
+          embedding: string // vector(768) stored as string
+          model: Database['public']['Enums']['embedding_model']
+          task_type: Database['public']['Enums']['embedding_task_type']
+          content_hash: string
+          source_text: string
+          text_length: number
+          tokens_used: number | null
+          processing_time_ms: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          extraction_id?: string | null
+          user_id?: string | null
+          embedding: string
+          model?: Database['public']['Enums']['embedding_model']
+          task_type?: Database['public']['Enums']['embedding_task_type']
+          content_hash: string
+          source_text: string
+          text_length: number
+          tokens_used?: number | null
+          processing_time_ms?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          extraction_id?: string | null
+          user_id?: string | null
+          embedding?: string
+          model?: Database['public']['Enums']['embedding_model']
+          task_type?: Database['public']['Enums']['embedding_task_type']
+          content_hash?: string
+          source_text?: string
+          text_length?: number
+          tokens_used?: number | null
+          processing_time_ms?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "embeddings_extraction_id_fkey"
+            columns: ["extraction_id"]
+            isOneToOne: false
+            referencedRelation: "extractions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "embeddings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       extraction_tags: {
         Row: {
           created_at: string | null
@@ -165,13 +228,111 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      embeddings_with_metadata: {
+        Row: {
+          id: string
+          extraction_id: string | null
+          user_id: string | null
+          embedding: string
+          model: Database['public']['Enums']['embedding_model']
+          task_type: Database['public']['Enums']['embedding_task_type']
+          content_hash: string
+          source_text: string
+          text_length: number
+          tokens_used: number | null
+          processing_time_ms: number | null
+          embedding_created_at: string | null
+          embedding_updated_at: string | null
+          url: string | null
+          title: string | null
+          original_content: string | null
+          summary: string | null
+          key_points: string[] | null
+          extraction_type: string | null
+          source_metadata: Json | null
+          extraction_created_at: string | null
+          email: string | null
+          full_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      find_similar_content: {
+        Args: {
+          query_embedding: string
+          similarity_threshold?: number
+          max_results?: number
+          target_user_id?: string
+        }
+        Returns: {
+          extraction_id: string
+          similarity_score: number
+          title: string | null
+          url: string | null
+          summary: string | null
+          created_at: string | null
+        }[]
+      }
+      find_duplicate_content: {
+        Args: {
+          content_hash: string
+          query_embedding: string
+          similarity_threshold?: number
+          target_user_id?: string
+        }
+        Returns: {
+          extraction_id: string
+          similarity_score: number
+          title: string | null
+          url: string | null
+          is_exact_duplicate: boolean
+        }[]
+      }
+      get_embedding_stats: {
+        Args: {
+          target_user_id?: string
+        }
+        Returns: {
+          total_embeddings: number
+          models_used: string[] | null
+          avg_text_length: number | null
+          oldest_embedding: string | null
+          newest_embedding: string | null
+        }[]
+      }
+      batch_similarity_search: {
+        Args: {
+          query_embeddings: string[]
+          similarity_threshold?: number
+          max_results_per_query?: number
+          target_user_id?: string
+        }
+        Returns: {
+          query_index: number
+          extraction_id: string
+          similarity_score: number
+          title: string | null
+          url: string | null
+        }[]
+      }
+      cluster_embeddings: {
+        Args: {
+          num_clusters?: number
+          target_user_id?: string
+        }
+        Returns: {
+          extraction_id: string
+          cluster_id: number
+          distance_to_centroid: number
+          title: string | null
+          url: string | null
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      embedding_model: 'gemini-embedding-001' | 'text-embedding-004' | 'text-embedding-preview-0409' | 'textembedding-gecko@001' | 'textembedding-gecko@003'
+      embedding_task_type: 'RETRIEVAL_QUERY' | 'RETRIEVAL_DOCUMENT' | 'SEMANTIC_SIMILARITY' | 'CLASSIFICATION' | 'CLUSTERING'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -301,7 +462,22 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      embedding_model: {
+        'gemini-embedding-001': 'gemini-embedding-001',
+        'text-embedding-004': 'text-embedding-004',
+        'text-embedding-preview-0409': 'text-embedding-preview-0409',
+        'textembedding-gecko@001': 'textembedding-gecko@001',
+        'textembedding-gecko@003': 'textembedding-gecko@003',
+      },
+      embedding_task_type: {
+        RETRIEVAL_QUERY: 'RETRIEVAL_QUERY',
+        RETRIEVAL_DOCUMENT: 'RETRIEVAL_DOCUMENT',
+        SEMANTIC_SIMILARITY: 'SEMANTIC_SIMILARITY',
+        CLASSIFICATION: 'CLASSIFICATION',
+        CLUSTERING: 'CLUSTERING',
+      },
+    },
   },
 } as const
 

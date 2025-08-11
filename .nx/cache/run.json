@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx run chrome-extension:dev",
+    "startTime": "2025-08-10T23:18:52.066Z",
+    "endTime": "2025-08-10T23:18:56.459Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "chrome-extension:dev",
+      "target": "dev",
+      "projectName": "chrome-extension",
+      "hash": "1499537247642034367",
+      "startTime": "2025-08-10T23:18:52.078Z",
+      "endTime": "2025-08-10T23:18:56.457Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    }
+  ]
+}
